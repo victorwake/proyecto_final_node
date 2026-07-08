@@ -10,7 +10,15 @@
       "value": "http://localhost:3000"
     },
     {
+      "key": "renderUrl",
+      "value": "https://porfolio-victor-pinto.onrender.com"
+    },
+    {
       "key": "token",
+      "value": ""
+    },
+    {
+      "key": "renderToken",
       "value": ""
     }
   ],
@@ -145,6 +153,142 @@
                 "value": "Bearer {{token}}"
               }
             ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Render (Producción)",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.environment.set('renderToken', jsonData.token);",
+                  "    console.log('Token Render guardado');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{renderUrl}}/auth/login",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@techlab.com\",\n  \"password\": \"admin123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "url": "{{renderUrl}}/api/products",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{renderToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Get Product By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{renderUrl}}/api/products/1",
+              "host": ["{{renderUrl}}"],
+              "path": ["api", "products", "1"]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{renderToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "url": "{{renderUrl}}/api/products/create",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{renderToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Producto Render\",\n  \"description\": \"Creado desde Render\",\n  \"category\": \"electrónica\",\n  \"price\": 250,\n  \"stock\": 5\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{renderUrl}}/api/products/1",
+              "host": ["{{renderUrl}}"],
+              "path": ["api", "products", "1"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{renderToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Producto actualizado desde Render\",\n  \"price\": 300\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{renderUrl}}/api/products/1",
+              "host": ["{{renderUrl}}"],
+              "path": ["api", "products", "1"]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{renderToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{renderUrl}}/up"
           }
         }
       ]
